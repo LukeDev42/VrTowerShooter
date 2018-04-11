@@ -11,13 +11,15 @@ public class PVR_InteractionController : MonoBehaviour {
     [HideInInspector]
     public Vector3 angularVelocity;
     [HideInInspector]
-    public bool triggerWasPressed;
+    public bool gripIsHeld;
+    [HideInInspector]
+    public bool shootingEnabled;
 
     private PVR_InteractionObject objectBeingInteractedWith;
 
     private SteamVR_TrackedObject trackedObj;
 
-    private SteamVR_Controller.Device Controller
+    public SteamVR_Controller.Device Controller
     {
         get { return SteamVR_Controller.Input((int)trackedObj.index); }
     }
@@ -32,7 +34,7 @@ public class PVR_InteractionController : MonoBehaviour {
         trackedObj = GetComponent<SteamVR_TrackedObject>();
     }
 
-    private void CheckForInteractionObject()
+    public void CheckForInteractionObject()
     {
         Collider[] overlappedColliders = Physics.OverlapSphere(snapColliderOrigin.position,
             snapColliderOrigin.lossyScale.x / 2f);
@@ -47,42 +49,56 @@ public class PVR_InteractionController : MonoBehaviour {
                 return;
             }
         }
+
+        /*.Log(objectBeingInteractedWith.name);
+
+        if(objectBeingInteractedWith.name == "Enfield")
+        { shootingEnabled = true; }
+        else
+        { shootingEnabled = false; }*/
     }
 
-    private void Update()
+    public bool GripIsHeld()
     {
-        if (Controller.GetHairTriggerDown())
+        if (Controller.GetPress(SteamVR_Controller.ButtonMask.Grip))
         {
-            CheckForInteractionObject();
-            if (triggerWasPressed)
-            {
-                triggerWasPressed = false;
-            }
-            if(!triggerWasPressed)
-            {
-                triggerWasPressed = true;
-            }
+            gripIsHeld = true;
+            return gripIsHeld;
         }
-
-        if(Controller.GetHairTrigger())
+        else
         {
-            if (objectBeingInteractedWith)
+            gripIsHeld = false;
+            return gripIsHeld;
+        }
+    }
+
+    public virtual void Update()
+    {
+            if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
             {
-                if(objectBeingInteractedWith)
+                CheckForInteractionObject();
+            }
+
+            if (Controller.GetPress(SteamVR_Controller.ButtonMask.Grip))
+            {
+                if (objectBeingInteractedWith)
                 {
-                    objectBeingInteractedWith.OnTriggerIsBeingPressed(this);
+                    if (objectBeingInteractedWith)
+                    {
+                        objectBeingInteractedWith.OnTriggerIsBeingPressed(this);
+                    }
                 }
             }
-        }
 
-        if(Controller.GetHairTriggerUp())
-        {
-            if(objectBeingInteractedWith)
+            if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
             {
-                objectBeingInteractedWith.OnTriggerWasReleased(this);
-                objectBeingInteractedWith = null;
+                if (objectBeingInteractedWith)
+                {
+                    objectBeingInteractedWith.OnTriggerWasReleased(this);
+                    objectBeingInteractedWith = null;
+                }
             }
-        }
+
     }
 
     private void UpdateVelocity()

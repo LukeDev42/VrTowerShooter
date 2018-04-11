@@ -336,6 +336,7 @@
     <Compile Include="Assets\Scripts\Project VR\PVR_InteractionObject.cs" />
     <Compile Include="Assets\Scripts\Project VR\PVR_SimpleGrab.cs" />
     <Compile Include="Assets\Scripts\Project VR\PVR_SnapToController.cs" />
+    <Compile Include="Assets\Scripts\ShootingController.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />

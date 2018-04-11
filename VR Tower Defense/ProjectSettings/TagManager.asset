@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InteractionObject
   - Controller
+  - Shutter
   layers:
   - Default
   - TransparentFX
